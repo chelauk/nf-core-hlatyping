@@ -6,8 +6,9 @@ options        = initOptions(params.options)
 
 process YARA_MAPPER {
     echo true
-    tag "$meta.id"
-    label 'process_medium'
+    label 'big'
+	conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
+	tag "$meta.id"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }

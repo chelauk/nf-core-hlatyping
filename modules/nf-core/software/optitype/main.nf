@@ -6,8 +6,9 @@ options        = initOptions(params.options)
 
 process OPTITYPE {
     tag "$meta.id"
-    label 'process_medium'
-    publishDir "${params.outdir}",
+    conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
+	label 'big'
+	publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
@@ -33,7 +34,10 @@ process OPTITYPE {
     """
 
     stub:
+	prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
     echo ${bam} ${config} ${meta.seq_type} $options.args --prefix $prefix --outdir $prefix
-    """
+    touch test.version.txt
+	mkdir ${prefix}
+	"""
 }
