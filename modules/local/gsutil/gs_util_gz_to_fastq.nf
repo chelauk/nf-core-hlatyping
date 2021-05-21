@@ -5,7 +5,7 @@ params.options = [:]
 def options    = initOptions(params.options)
 
 process GS_FILE_TO_FASTQ {
-
+    echo true
     tag "$meta.id"
 
     publishDir params.outdir, mode: params.publish_dir_mode,
@@ -19,13 +19,13 @@ process GS_FILE_TO_FASTQ {
 
     script:
     """
-    gsutil $options.args cat $file1 | zcat > ${meta.id}_${meta.lane}_R1.fastq
-    gsutil $options.args cat $file2 | zcat > ${meta.id}_${meta.lane}_R2.fastq
+    gsutil $options.args cat ${reads[0]} | zcat > ${meta.id}_${meta.lane}_R1.fastq
+    gsutil $options.args cat ${reads[1]} | zcat > ${meta.id}_${meta.lane}_R2.fastq
     """
 
     stub:
     """
-    echo ${meta.id} ${reads}
+    echo ${meta.id} ${reads[0]} ${reads[1]}
     touch ${meta.id}_${meta.lane}_R1.fastq
     touch ${meta.id}_${meta.lane}_R2.fastq
     """

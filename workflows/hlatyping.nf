@@ -37,7 +37,6 @@ workflow HLATYPING {
     cat_files.view()
     CAT_FASTQS(cat_files)
     MAKE_OT_CONFIG()
-    reads_input = GS_FILE_TO_FASTQ.out.reads
-    YARA_MAPPER(reads_input,params.base_index_path,base_index_name)
+    YARA_MAPPER(CAT_FASTQS.out,params.base_index_path,base_index_name)
     OPTITYPE(MAKE_OT_CONFIG.out.ot_config,YARA_MAPPER.out.bam, params.seqtype)
 }
