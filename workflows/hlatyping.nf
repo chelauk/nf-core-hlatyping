@@ -20,14 +20,22 @@ base_index_name = params.base_index_name ?  params.base_index_name :  "hla_refer
 modules = params.modules 
 
 include { GS_FILE_TO_FASTQ } from '../modules/local/gsutil/gs_util_gz_to_fastq' addParams(options:modules['gs_util_gz_to_fastq'])
+include { CAT_FASTQS }       from '../modules/local/cat/cat'
 include { MAKE_OT_CONFIG }   from '../modules/local/local_optitype/configbuilder'
 include { YARA_MAPPER }      from '../modules/nf-core/software/yara/mapper/main'
 include { OPTITYPE }         from '../modules/nf-core/software/optitype/main'
 
 workflow HLATYPING {
     //convert gs fastq gz to fastq
+    //input_sample.view()
     GS_FILE_TO_FASTQ(input_sample)
     // Create config.ini for Optitype
+    cat_files = GS_FILE_TO_FASTQ.out
+    cat_files = cat_files.map{meta,reads -> [meta["id"],reads]}
+    cat_files = cat_files.groupTuple(by:0)
+    cat_files = cat_files.map{id,reads -> [id, reads.flatten()]}
+    cat_files.view()
+    CAT_FASTQS(cat_files)
     MAKE_OT_CONFIG()
     reads_input = GS_FILE_TO_FASTQ.out.reads
     YARA_MAPPER(reads_input,params.base_index_path,base_index_name)

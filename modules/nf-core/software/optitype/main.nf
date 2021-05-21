@@ -6,7 +6,7 @@ options        = initOptions(params.options)
 
 process OPTITYPE {
     tag "$meta.id"
-    conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
+    //conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
 	label 'big'
 	publishDir "${params.outdir}",
         mode: params.publish_dir_mode,

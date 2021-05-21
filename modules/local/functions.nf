@@ -7,11 +7,13 @@
     Channel.from(input_file)
         .splitCsv(sep : '\t')
         .map { row ->
-        def meta = [:]
-        meta.id = row[0]
-        def file1     = row[1]
-        def file2     = row[2]
-        [meta, file1, file2 ]
+        def meta    = [:]
+        meta.id     = row[0]
+        meta.sample = row[1]
+        meta.lane     = row[2]
+        def file1   = row[3]
+        def file2   = row[4]
+        [meta, [file1, file2]]
         }
     }
 

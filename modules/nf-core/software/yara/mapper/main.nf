@@ -7,7 +7,7 @@ options        = initOptions(params.options)
 process YARA_MAPPER {
     echo true
     label 'big'
-	conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
+	//conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
 	tag "$meta.id"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
