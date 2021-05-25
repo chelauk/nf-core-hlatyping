@@ -14,6 +14,7 @@ process CRAM_TO_FASTQ {
     input:
         tuple val(meta), path(cram)
         path fasta
+        path fai
 
     output:
         tuple val(meta), path("*merged_R{1,2}.fastq"), emit: reads

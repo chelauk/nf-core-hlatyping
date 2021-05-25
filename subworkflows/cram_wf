@@ -6,10 +6,11 @@ workflow CRAM_WF {
         take:
         input_sample
         fasta
+        fai
 
         main:
         GS_FILE_TO_CRAM(input_sample)
-        CRAM_TO_FASTQ(GS_FILE_TO_CRAM.out.cram,fasta)
+        CRAM_TO_FASTQ(GS_FILE_TO_CRAM.out.cram,fasta,fai)
         cram_fastqs = CRAM_TO_FASTQ.out.reads
         cram_fastqs = cram_fastqs.map{meta,reads -> [meta["id"],reads]}
         cram_fastqs = cram_fastqs.groupTuple(by:0)

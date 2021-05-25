@@ -28,7 +28,9 @@ base_index_path = params.base_index_path ? params.base_index_path : null
 modules = params.modules 
 
 // Initialize each params in params.genomes, catch the command line first if it was defined
-params.fasta                   = params.genome ? params.genomes[params.genome].fasta       ?: false : false
+params.fasta = params.genome ? params.genomes[params.genome].fasta                     ?: null : null
+params.fai   = params.genome && params.fasta ? params.genomes[params.genome].fasta_fai ?: null : null
+
 file("${params.outdir}/no_file").text = "no_file\n"
 
 // Initialize file channels based on params, defined in the params.genomes[params.genome] scope
@@ -70,5 +72,5 @@ include { HLATYPING } from './workflows/hlatyping' addParams (
     gs_util_gz_to_fastq_options:                                        modules['gs_util_gz_to_fastq'])
 
 workflow {
-    HLATYPING(base_index_name,base_index_path,fasta,input_sample)
+    HLATYPING(base_index_name,base_index_path,fasta,fai,input_sample)
 }
