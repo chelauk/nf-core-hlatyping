@@ -2,15 +2,19 @@ include { GS_FILE_TO_CRAM }  from '../modules/local/gsutil/gs_util_get_cram/gs_u
 include { CRAM_TO_FASTQ }    from '../modules/local/samtools/cram_to_fastq'
 
 workflow CRAM_WF {
+
         take:
         input_sample
+        fasta
+
         main:
         GS_FILE_TO_CRAM(input_sample)
-        CRAM_TO_FASTQ(GS_FILE_TO_CRAM.out.cram)
+        CRAM_TO_FASTQ(GS_FILE_TO_CRAM.out.cram,fasta)
         cram_fastqs = CRAM_TO_FASTQ.out.reads
         cram_fastqs = cram_fastqs.map{meta,reads -> [meta["id"],reads]}
         cram_fastqs = cram_fastqs.groupTuple(by:0)
         cram_fastqs = cram_fastqs.map{id,reads -> [id, reads.flatten()]}
+
         emit:
         merged_reads = cram_fastqs
 }
