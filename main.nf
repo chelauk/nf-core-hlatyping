@@ -40,7 +40,7 @@ include {
     extract_fastq;
     extract_cram;
     has_extension
-} from 'modules/local/functions.nf'
+} from './modules/local/functions.nf'
 // set up params
 tsv_path = null
 if ( params.input && ( has_extension( params.input, "tsv" ) ) ) tsv_path = params.input
@@ -70,5 +70,5 @@ include { HLATYPING } from './workflows/hlatyping' addParams (
     gs_util_gz_to_fastq_options:                                        modules['gs_util_gz_to_fastq'])
 
 workflow {
-    HLATYPING( base_index_name,base_index_path,fasta)
+    HLATYPING(base_index_name,base_index_path,fasta,input_sample)
 }
