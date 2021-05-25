@@ -19,6 +19,21 @@ if (params.help) {
     log.info NfcoreSchema.params_help(workflow, params, json_schema, command)
     exit 0
 }
+////////////////////////////////////////////////////
+/* --              SETUP PARAMS                -- */
+////////////////////////////////////////////////////
+
+base_index_name = params.base_index_name ? params.base_index_name : "hla_reference_${params.seqtype}"
+base_index_path = params.base_index_path ? params.base_index_path : null
+modules = params.modules 
+
+// Initialize each params in params.genomes, catch the command line first if it was defined
+params.fasta                   = params.genome ? params.genomes[params.genome].fasta       ?: false : false
+file("${params.outdir}/no_file").text = "no_file\n"
+
+// Initialize file channels based on params, defined in the params.genomes[params.genome] scope
+
+fasta             = params.fasta             ? file(params.fasta)             : file("${params.outdir}/no_file")
 
 ////////////////////////////////////////////////////
 /* --         PRINT PARAMETER SUMMARY          -- */
@@ -27,7 +42,12 @@ if (params.help) {
 def summary_params = NfcoreSchema.params_summary_map(workflow, params, json_schema)
 log.info NfcoreSchema.params_summary_log(workflow, params, json_schema)
 
+include { HLATYPING } from './workflows/hlatyping' addParams ( 
+    summary_params:                                                     summary_params,
+    gs_util_get_cram_options:                                           modules['gs_get_cram'],
+    gs_util_gz_to_fastq_options:                                        modules['gs_util_gz_to_fastq'])
+
 workflow {
-    include { HLATYPING } from './workflows/hlatyping' addParams ( summary_params: summary_params )
-    HLATYPING()
+    HLATYPING( base_index_name,base_index_path,fasta,input_sample
+)
 }

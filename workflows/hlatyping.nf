@@ -21,26 +21,26 @@ else if (tsv_path && ( params.type == 'cram' )){
     input_sample = extract_cram(tsv_file)
 }
 
-base_index_name = params.base_index_name ?  params.base_index_name :  "hla_reference_${params.seqtype}"
-modules = params.modules 
-
-
-include { CRAM_WF }          from '../subworkflows/cram_wf'                                   addParams(
-    gs_util_get_cram_options:                                                                 modules['gs_get_cram'])
-include { FASTQ_WF }         from '../subworkflows/fastq_wf'                                  addParams(
-    gs_util_gz_to_fastq_options:                                                              modules['gs_util_gz_to_fastq'])
-
-include { MAKE_OT_CONFIG }   from '../modules/local/local_optitype/configbuilder'
-include { YARA_MAPPER }      from '../modules/nf-core/software/yara/mapper/main'
-include { OPTITYPE }         from '../modules/nf-core/software/optitype/main'
+include { CRAM_WF }        from '../subworkflows/cram_wf'  addParams(options: params.gs_util_get_cram_options)
+include { FASTQ_WF }       from '../subworkflows/fastq_wf' addParams(options: params.gs_util_gz_to_fastq_options)
+include { MAKE_OT_CONFIG } from '../modules/local/local_optitype/configbuilder'
+include { YARA_MAPPER }    from '../modules/nf-core/software/yara/mapper/main'
+include { OPTITYPE }       from '../modules/nf-core/software/optitype/main'
 
 workflow HLATYPING {
+    take:
+    base_index_name
+    base_index_path
+    fasta
+    input_sample
+
+    main:
     if ( params.type == 'fastq' ) {
         FASTQ_WF(input_sample)
     }
 
     if ( params.type == 'cram' ) {
-        CRAM_WF(input_sample)
+        CRAM_WF(input_sample,fasta)
     }
 
     if (params.type == 'fastq'){
