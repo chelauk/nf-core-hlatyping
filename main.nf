@@ -28,7 +28,7 @@ base_index_path = params.base_index_path ? params.base_index_path : null
 modules = params.modules 
 
 // Initialize each params in params.genomes, catch the command line first if it was defined
-params.fasta = params.genome ? params.genomes[params.genome].fasta                     ?: null : null
+params.fasta = params.genome                 ? params.genomes[params.genome].fasta     ?: null : null
 params.fai   = params.genome && params.fasta ? params.genomes[params.genome].fasta_fai ?: null : null
 
 file("${params.outdir}/no_file").text = "no_file\n"
@@ -36,6 +36,7 @@ file("${params.outdir}/no_file").text = "no_file\n"
 // Initialize file channels based on params, defined in the params.genomes[params.genome] scope
 
 fasta             = params.fasta             ? file(params.fasta)             : file("${params.outdir}/no_file")
+fasta             = params.fai               ? file(params.fai)               : file("${params.outdir}/no_file")
 
 // Import functions
 include {
