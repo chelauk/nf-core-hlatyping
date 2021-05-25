@@ -15,7 +15,7 @@ params.options = [:]
 def options    = initOptions(params.options)
 
 process MAKE_OT_CONFIG {
-    label 'small'
+    label 'process_low'
     publishDir "${params.outdir}/config", mode: params.publish_dir_mode
 
     output:

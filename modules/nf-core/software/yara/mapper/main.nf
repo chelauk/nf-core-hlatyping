@@ -6,7 +6,7 @@ options        = initOptions(params.options)
 
 process YARA_MAPPER {
     //echo true
-    label 'big'
+    label 'process_high'
 	//conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
 	tag "$id"
     publishDir "${params.outdir}",

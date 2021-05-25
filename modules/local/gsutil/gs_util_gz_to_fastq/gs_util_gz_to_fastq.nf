@@ -5,7 +5,8 @@ params.options = [:]
 def options    = initOptions(params.options)
 
 process GS_FILE_TO_FASTQ {
-    echo true
+    label 'process_low'
+
     tag "$meta.id"
 
     publishDir params.outdir, mode: params.publish_dir_mode,

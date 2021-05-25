@@ -7,7 +7,7 @@ options        = initOptions(params.options)
 process OPTITYPE {
     tag "$id"
     //conda '/data/scratch/DMP/UCEC/EVGENMOD/cjames/.conda/envs/nf-core-hlatyping-1.2.0'
-	label 'big'
+	label 'process_high'
 	publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process)) }
