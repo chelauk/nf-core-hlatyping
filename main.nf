@@ -35,6 +35,26 @@ file("${params.outdir}/no_file").text = "no_file\n"
 
 fasta             = params.fasta             ? file(params.fasta)             : file("${params.outdir}/no_file")
 
+// Import functions
+include {
+    extract_fastq;
+    extract_cram;
+    has_extension
+} from 'modules/local/functions.nf'
+// set up params
+tsv_path = null
+if ( params.input && ( has_extension( params.input, "tsv" ) ) ) tsv_path = params.input
+input_sample = Channel.empty()
+
+if (tsv_path && ( params.type == 'fastq' )){
+    tsv_file = file(tsv_path)
+    input_sample = extract_fastq(tsv_file)
+}
+else if (tsv_path && ( params.type == 'cram' )){
+    tsv_file = file(tsv_path)
+    input_sample = extract_cram(tsv_file)
+}
+
 ////////////////////////////////////////////////////
 /* --         PRINT PARAMETER SUMMARY          -- */
 ////////////////////////////////////////////////////
@@ -42,12 +62,13 @@ fasta             = params.fasta             ? file(params.fasta)             : 
 def summary_params = NfcoreSchema.params_summary_map(workflow, params, json_schema)
 log.info NfcoreSchema.params_summary_log(workflow, params, json_schema)
 
+
+
+
 include { HLATYPING } from './workflows/hlatyping' addParams ( 
-    summary_params:                                                     summary_params,
     gs_util_get_cram_options:                                           modules['gs_get_cram'],
     gs_util_gz_to_fastq_options:                                        modules['gs_util_gz_to_fastq'])
 
 workflow {
-    HLATYPING( base_index_name,base_index_path,fasta,input_sample
-)
+    HLATYPING( base_index_name,base_index_path,fasta)
 }

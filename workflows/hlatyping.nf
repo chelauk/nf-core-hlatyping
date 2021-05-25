@@ -1,26 +1,3 @@
-/*
- * functions
- */
-
-include {
-    extract_fastq;
-    extract_cram;
-    has_extension
-} from '../modules/local/functions.nf'
-// set up params
-tsv_path = null
-if ( params.input && ( has_extension( params.input, "tsv" ) ) ) tsv_path = params.input
-input_sample = Channel.empty()
-
-if (tsv_path && ( params.type == 'fastq' )){
-    tsv_file = file(tsv_path)
-    input_sample = extract_fastq(tsv_file)
-}
-else if (tsv_path && ( params.type == 'cram' )){
-    tsv_file = file(tsv_path)
-    input_sample = extract_cram(tsv_file)
-}
-
 include { CRAM_WF }        from '../subworkflows/cram_wf'  addParams(options: params.gs_util_get_cram_options)
 include { FASTQ_WF }       from '../subworkflows/fastq_wf' addParams(options: params.gs_util_gz_to_fastq_options)
 include { MAKE_OT_CONFIG } from '../modules/local/local_optitype/configbuilder'
@@ -30,7 +7,7 @@ include { OPTITYPE }       from '../modules/nf-core/software/optitype/main'
 workflow HLATYPING {
     take:
     base_index_name
-    base_index_path
+    base_in
     fasta
     input_sample
 
