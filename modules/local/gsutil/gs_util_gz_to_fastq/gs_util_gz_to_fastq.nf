@@ -25,7 +25,7 @@ process GS_FILE_TO_FASTQ {
 
     stub:
     """
-    echo ${meta.id} ${reads[0]} ${reads[1]}
+    # echo ${meta.id} ${reads[0]} ${reads[1]}
     touch ${meta.id}_${meta.lane}_R1.fastq
     touch ${meta.id}_${meta.lane}_R2.fastq
     """

@@ -1,0 +1,16 @@
+include { GS_FILE_TO_FASTQ } from '../modules/local/gsutil/gs_util_gz_to_fastq/gs_util_gz_to_fastq' addParams(options: params.gs_util_gz_to_fastq_options)
+include { CAT_FASTQS }       from '../modules/local/cat/cat'
+
+workflow FASTQ_WF {
+        take:
+        input_sample
+        main:
+        GS_FILE_TO_FASTQ(input_sample)
+        cat_files = GS_FILE_TO_FASTQ.out
+        cat_files = cat_files.map{meta,reads -> [meta["id"],reads]}
+        cat_files = cat_files.groupTuple(by:0)
+        cat_files = cat_files.map{id,reads -> [id, reads.flatten()]}
+        CAT_FASTQS(cat_files)
+        emit:
+        merged_reads = CAT_FASTQS.out
+}
